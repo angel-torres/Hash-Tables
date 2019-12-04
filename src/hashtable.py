@@ -15,6 +15,7 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
+        self.count = 0
 
 
     def _hash(self, key):
@@ -51,7 +52,21 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        new_item = LinkedPair(key, value)
+        if self.storage[index] == None:
+            self.storage[index] = new_item
+
+        else:
+            current_node = self.storage[index]
+            while True:
+                if current_node.key == key:
+                    current_node.value = value
+                    break
+                if current_node.next == None:
+                    current_node.next = new_item
+                    break
+                current_node = current_node.next
 
 
 
@@ -63,7 +78,19 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        if self.storage[index] == None:
+            print("Item not found")
+        else:
+            current_node = self.storage[index]
+            while current_node != None:
+                 if current_node.key == key:
+                     current_node.value = None 
+                     break
+                 if current_node.next == None:
+                     print("Item not found")
+                     return None
+                 current_node = current_node.next
 
 
     def retrieve(self, key):
@@ -74,7 +101,17 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        if self.storage[index] != None:
+            current_node = self.storage[index]
+            while current_node != None:
+                if current_node.key == key:
+                    return current_node.value
+                current_node = current_node.next
+        return None
+
+
+        return self.storage[index].value
 
 
     def resize(self):
@@ -84,7 +121,14 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        self.capacity = self.capacity*2
+        new_storage = [None] * self.capacity
+        for i in range(0, self.count, 1):
+            index = self._hash_mod(self.storage[i].key)
+            new_storage[index] = self.storage[i]
+        self.storage = new_storage
+
+             
 
 
 
@@ -115,3 +159,18 @@ if __name__ == "__main__":
     print(ht.retrieve("line_3"))
 
     print("")
+
+
+
+new_table = HashTable(3) 
+print(new_table.storage)
+new_table.insert("angel", "torres")
+new_table.insert("rob", "towe")
+new_table.insert("mario", "bros")
+print(new_table.retrieve("angel"))
+print(new_table.retrieve("rob"))
+print(new_table.retrieve("mario"))
+new_table.remove("angel")
+new_table.remove("mario")
+print(new_table.retrieve("angel" ), "after removal")
+print(new_table.retrieve("mario"), "after removal")
